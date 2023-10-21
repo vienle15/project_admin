@@ -1,0 +1,7 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  .main {
+    padding: 50px;
+  }
+}

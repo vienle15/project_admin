@@ -36,3 +36,252 @@
     transform: rotate(360deg);
   }
 }
+/* CSS for the registration form */
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem; /* Add some spacing between label and input */
+}
+
+.form-control-lg {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+}
+
+.error {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+}
+
+/* Style the submit button */
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 0.7rem 2rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+/* UserManagement.css */
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border: 1px solid #dddddd;
+}
+button.pri {
+  background-color: #ef6666;
+}
+button.sec {
+  background-color: #5b98d9;
+}
+button {
+  border-radius: 20px;
+}
+.table-admin th {
+  text-align: center;
+}
+th {
+  background-color: #d6e476;
+  border: 1px solid #dddddd;
+  padding: 8px;
+}
+
+td {
+  border: 1px solid #dddddd;
+  padding: 8px;
+  text-align: center;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+}
+a {
+  text-decoration: none;
+}
+li {
+  list-style-type: none;
+}
+
+.hanldeSearch {
+  width: 200px;
+  height: 30px;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.pri {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.sec {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+/* CSS for modal container */
+
+.dashboard {
+  padding: 20px;
+}
+
+.dashboard-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.dashboard-description {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.dashboard-cards {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.dashboard-card {
+  flex: 0 0 calc(25% - 30px);
+  max-width: calc(25% - 30px);
+  margin: 0 15px 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+}
+
+.card-title {
+  font-size: 18px;
+  margin: 0;
+}
+
+.card-value {
+  font-size: 36px;
+  margin: 10px 0;
+}
+
+.card-text {
+  margin: 0;
+}
+
+.text-success {
+  color: #28a745;
+}
+
+.text-danger {
+  color: #dc3545;
+}
+
+.dashboard-transactions {
+  margin-top: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  text-align: left;
+}
+
+.btn {
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn-light {
+  background-color: #f8f9fa;
+  color: #000;
+}
+/* CSS for the modal container */
+.modal {
+  display: none; /* Modal ẩn ban đầu */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* Tạo overlay mờ */
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: black;
+}
