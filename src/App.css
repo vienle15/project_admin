@@ -255,33 +255,69 @@ li {
 }
 /* CSS for the modal container */
 .modal {
-  display: none; /* Modal ẩn ban đầu */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: fixed;
   z-index: 1;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
   background-color: rgba(0, 0, 0, 0.4); /* Tạo overlay mờ */
 }
 
 .modal-content {
   background-color: #fff;
-  margin: 10% auto;
+  width: 50%; /* Điều chỉnh độ rộng của modal */
   padding: 20px;
   border: 1px solid #888;
-  width: 50%;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
 }
 
 .close {
   color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+  align-self: flex-end;
+  font-size: 24px;
   cursor: pointer;
 }
 
 .close:hover {
   color: black;
+}
+
+/* Style for form fields */
+.modal-content label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.modal-content input {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+/* Style for the Save button */
+.modal-content button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+.preview-image {
+  max-width: 100%;
+  max-height: 200px; /* Điều chỉnh kích thước hình ảnh xem trước */
+  margin-top: 10px;
 }

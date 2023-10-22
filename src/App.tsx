@@ -4,17 +4,12 @@ import logo from "./logo.svg";
 import "./App.css";
 import { Navigate, Route, Router, Routes } from "react-router-dom";
 import { routes } from "./routes";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 
-import LoginForm from "./pages/Auth/Login/Login";
-import Sidebar from "./components/Sidebar";
 import Layout from "./layout/Layout";
 import SignIn from "./pages/Auth/Login/Login";
 import { useSelector } from "react-redux";
 
 function App() {
-  // let isLoggedIn = false;
   const isLoggedIn = useSelector(
     (state: { auth: { isLoggedIn: boolean } }) => state.auth.isLoggedIn
   );

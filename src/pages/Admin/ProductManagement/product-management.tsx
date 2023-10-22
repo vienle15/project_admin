@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Product from "../../../entities/product.entity";
 import { deleteData, createData } from "../../Services/API";
+import "../../../App.css";
 
 function ProductManagement() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -58,7 +59,7 @@ function ProductManagement() {
     const response = await createData("products", newProduct);
 
     if (response) {
-      setProducts([...products, response]);
+      setProducts((prevProducts) => [...prevProducts, response]);
       closeModal();
       setNewProduct({
         id: "",
@@ -82,6 +83,20 @@ function ProductManagement() {
       setProducts(filteredProducts);
     }
   }, [searchTerm, originalProducts, products]);
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target && event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        setNewProduct({
+          ...newProduct,
+          image: e.target?.result as string,
+        });
+      };
+
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  };
 
   return (
     <div>
@@ -139,7 +154,7 @@ function ProductManagement() {
       </table>
 
       {showModal && (
-        <div className="modal">
+        <div>
           <div className="modal-content">
             <span className="close" onClick={closeModal}>
               &times;
@@ -154,12 +169,40 @@ function ProductManagement() {
                   handleInputChange("productName", e.target.value)
                 }
               />
+              <label>Image:</label>
+              <input
+                type="file"
+                accept="image/*" /* Chỉ cho phép tệp hình ảnh */
+                onChange={handleImageChange}
+              />
+              <img
+                src={newProduct.image}
+                alt="Preview"
+                className="preview-image"
+              />
+
+              <label>Id:</label>
+              <input
+                type="text"
+                value={newProduct.id}
+                onChange={(e) =>
+                  handleInputChange("id", parseFloat(e.target.value))
+                }
+              />
+              <label>productCode:</label>
+              <input
+                type="text"
+                value={newProduct.productCode}
+                onChange={(e) =>
+                  handleInputChange("productCode", e.target.value)
+                }
+              />
               <label>Price:</label>
               <input
                 type="text"
                 value={newProduct.productPrice}
                 onChange={(e) =>
-                  handleInputChange("productPrice", parseFloat(e.target.value))
+                  handleInputChange("productPrice", e.target.value)
                 }
               />
               <label>Quantity:</label>
