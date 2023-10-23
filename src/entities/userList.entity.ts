@@ -4,6 +4,8 @@ interface UserList {
   name: string;
   phone: string;
   address: string;
-  userID: string;
+  id: string;
+  role: string;
+  status: boolean;
 }
 export default UserList;

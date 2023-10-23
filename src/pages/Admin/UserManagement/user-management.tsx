@@ -1,27 +1,37 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import UserList from "../../../entities/userList.entity";
+import { getData, updateData } from "../../Services/API";
 
 function UserManagement() {
   const [users, setUsers] = useState<UserList[]>([]); // State để lưu trữ dữ liệu
   const [searchTerm, setSearchTerm] = useState(""); // State để lưu trữ từ khóa tìm kiếm
   const [originalUsers, setOriginalUsers] = useState<UserList[]>([]); // Sao lưu danh sách người dùng gốc
 
+  function getDataUser() {
+    getData("usersList").then((response) => {
+      setUsers(response);
+      setOriginalUsers(response); // Sao lưu danh sách người dùng gốc
+    });
+  }
+
   useEffect(() => {
     // Sử dụng Axios để lấy dữ liệu từ tệp JSON
-    axios.get("http://localhost:3000/usersList").then((response) => {
-      setUsers(response.data);
-      setOriginalUsers(response.data); // Sao lưu danh sách người dùng gốc
-    });
+    getDataUser();
   }, []);
 
   // Hàm xử lý khi có sự thay đổi trên trường tìm kiếm
   const handleSearch = () => {
     // Lọc danh sách người dùng dựa trên từ khóa tìm kiếm
-    const filteredUsers = users.filter((user) =>
+
+    console.log(222, originalUsers);
+
+    const filteredUsers = originalUsers.filter((user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setUsers(filteredUsers);
+    console.log(filteredUsers, 1111);
+
+    setUsers([...filteredUsers]);
   };
 
   // Hàm xử lý khi nhấn nút "Clear"
@@ -30,17 +40,41 @@ function UserManagement() {
     setUsers(originalUsers); // Đặt lại danh sách người dùng bằng danh sách gốc
   };
 
-  useEffect(() => {
-    if (searchTerm === "") {
-      setUsers(originalUsers); // Nếu trường tìm kiếm trống, khôi phục danh sách người dùng
-    } else {
-      // Lọc danh sách người dùng dựa trên từ khóa tìm kiếm
-      const filteredUsers = originalUsers.filter((user) =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setUsers(filteredUsers);
+  const handleRoleChange = (userID: string, newRole: string) => {
+    // Tìm người dùng có userID tương ứng và cập nhật vai trò của họ
+    const updatedUsers = users.map((user) =>
+      user.id === userID ? { ...user, role: newRole } : user
+    );
+    setUsers(updatedUsers);
+
+    // Lưu trạng thái vai trò người dùng vào Local Storage
+    localStorage.setItem("userRoles", JSON.stringify(updatedUsers));
+  };
+
+  const handleBlockUser = (userID: string) => {
+    const userChange = users.find((user: UserList) => user.id === userID);
+    if (userChange) {
+      userChange.status = !userChange.status;
+
+      updateData("usersList", userChange.id, userChange)
+        .then((res) => {
+          getDataUser();
+        })
+        .catch();
     }
-  }, [searchTerm, originalUsers]);
+  };
+
+  useEffect(() => {
+    // Kiểm tra nếu có trạng thái vai trò người dùng trong Local Storage, thì sử dụng nó
+    const storedUserRoles = localStorage.getItem("userRoles");
+    if (storedUserRoles) {
+      setUsers(JSON.parse(storedUserRoles));
+    }
+  }, []);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchTerm]);
 
   return (
     <div>
@@ -69,28 +103,41 @@ function UserManagement() {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
-            <tr key={user.userID}>
-              <td>
-                <img src={user.avt} alt="Avatar" width="50" height="50" />
-              </td>
-              <td>{user.userID}</td>
-              <td>{user.email}</td>
-              <td>{user.name}</td>
-              <td>{user.phone}</td>
-              <td>{user.address}</td>
-              <td>
-                <select name="role" value={user.email}>
-                  <option value="Admin">Admin</option>
-                  <option value="User">User</option>
-                </select>
-              </td>
-              <td>
-                <button className="pri">Block</button>
-                <button className="sec">Delete</button>
-              </td>
-            </tr>
-          ))}
+          {users &&
+            users.map((user) => (
+              <tr key={user.id}>
+                <td>
+                  <img src={user.avt} alt="Avatar" width="50" height="50" />
+                </td>
+                <td>{user.id}</td>
+                <td>{user.email}</td>
+                <td>{user.name}</td>
+                <td>{user.phone}</td>
+                <td>{user.address}</td>
+                <td>
+                  <select
+                    name="role"
+                    value={user.role}
+                    onChange={(e) =>
+                      handleRoleChange(user.role, e.target.value)
+                    }
+                  >
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                  </select>
+                </td>
+                <td>
+                  <button
+                    className="pri"
+                    onClick={() => handleBlockUser(user.id)}
+                    style={user.status ? { background: "blue" } : {}}
+                  >
+                    {user.status ? "Unblock" : "Block"}
+                  </button>
+                  <button className="sec">Delete</button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

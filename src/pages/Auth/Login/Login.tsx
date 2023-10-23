@@ -21,7 +21,6 @@ import {
 import { useNavigate } from "react-router";
 import axios from "axios";
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function SignIn() {
@@ -45,6 +44,9 @@ export default function SignIn() {
 
       if (response.data) {
         dispatch(loginSuccess({ email, password }));
+
+        // Lưu thông tin đăng nhập vào Local Storage
+        localStorage.setItem("loggedInUser", JSON.stringify({ email }));
 
         navigate("/");
       } else {

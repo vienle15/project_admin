@@ -110,6 +110,9 @@ button.pri {
 button.sec {
   background-color: #5b98d9;
 }
+button.trd {
+  background-color: #d9d95b;
+}
 button {
   border-radius: 20px;
 }
@@ -157,6 +160,14 @@ li {
   cursor: pointer;
 }
 .sec {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.trd {
   background-color: #000;
   color: #fff;
   border: 1px solid #000;
@@ -320,4 +331,14 @@ li {
   max-width: 100%;
   max-height: 200px; /* Điều chỉnh kích thước hình ảnh xem trước */
   margin-top: 10px;
+}
+.input-label {
+  width: 100px; /* Điều chỉnh kích thước của label */
+  display: flex;
+  align-items: center; /* Căn giữa nội dung label và input */
+}
+
+.input-field {
+  flex: 1; /* Ô input sẽ mở rộng để lấp đầy phần còn lại của container */
+  margin-left: 10px; /* Khoảng cách giữa label và input */
 }
