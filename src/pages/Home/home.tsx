@@ -1,6 +1,45 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
-function home() {
+function Home() {
+  const [userData, setUserData] = useState<any[]>([]);
+  const [productData, setProductData] = useState<any[]>([]);
+  const [orderData, setOrderData] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Địa chỉ URL của JSON server cho từng tài nguyên
+    const userApiUrl = "http://localhost:3000/usersList";
+    const productApiUrl = "http://localhost:3000/products";
+
+    const orderApiUrl = " http://localhost:3000/orders";
+
+    // Hàm lấy dữ liệu từ API bằng Axios
+    const fetchData = async (
+      apiUrl: string,
+      setData: React.Dispatch<React.SetStateAction<any[]>>
+    ) => {
+      try {
+        const response = await axios.get(apiUrl);
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+
+    // Gọi hàm fetchData để lấy dữ liệu từ các tài nguyên
+    fetchData(userApiUrl, setUserData);
+    fetchData(productApiUrl, setProductData);
+
+    fetchData(orderApiUrl, setOrderData);
+  }, []);
+  // Tính toán tổng users, japaneseCourses, lessons và doanh thu
+  const totalUsers = userData.length;
+  const totalProducts = productData.length;
+
+  const totalOrders = orderData.length;
+  const totalRevenue = orderData.reduce((total, order) => {
+    return total + parseInt(order.price, 10);
+  }, 0);
   return (
     <>
       <div className="dashboard">
@@ -11,39 +50,23 @@ function home() {
 
         <div className="dashboard-cards">
           <div className="dashboard-card">
-            <h5 className="card-title">Customers</h5>
-            <p className="card-value">345k</p>
-            <p className="card-text">Feb 1 - Apr 1, United States</p>
-            <p className="card-text text-success">
-              18.2% increase since last month
-            </p>
+            <h5 className="card-title">Customers Count</h5>
+            <p className="card-value">{totalUsers}</p>
           </div>
 
           <div className="dashboard-card">
-            <h5 className="card-title">Revenue</h5>
-            <p className="card-value">$2.4k</p>
-            <p className="card-text">Feb 1 - Apr 1, United States</p>
-            <p className="card-text text-success">
-              4.6% increase since last month
-            </p>
+            <h5 className="card-title">Products Count</h5>
+            <p className="card-value">{totalProducts}</p>
           </div>
 
           <div className="dashboard-card">
-            <h5 className="card-title">Purchases</h5>
-            <p className="card-value">43</p>
-            <p className="card-text">Feb 1 - Apr 1, United States</p>
-            <p className="card-text text-danger">
-              2.6% decrease since last month
-            </p>
+            <h5 className="card-title">Order Count</h5>
+            <p className="card-value">{totalOrders}</p>
           </div>
 
           <div className="dashboard-card">
-            <h5 className="card-title">Traffic</h5>
-            <p className="card-value">64k</p>
-            <p className="card-text">Feb 1 - Apr 1, United States</p>
-            <p className="card-text text-success">
-              2.5% increase since last month
-            </p>
+            <h5 className="card-title">Total Money</h5>
+            <p className="card-value">{totalRevenue}$</p>
           </div>
         </div>
 
@@ -85,4 +108,4 @@ function home() {
   );
 }
 
-export default home;
+export default Home;

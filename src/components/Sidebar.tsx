@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./sidebar.scss";
 import { useLocation } from "react-router-dom";
-import { FaCubes, FaPray, FaReceipt } from "react-icons/fa";
+import { FaCubes, FaHome, FaListAlt, FaPray, FaReceipt } from "react-icons/fa";
 import { logout, AuthState } from "../redux/Slice/AuthSlice";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -20,6 +20,13 @@ const Sidebar: React.FC = () => {
       <h3>Admin's Pages</h3>
       <ul>
         <li>
+          <FaHome />
+          <Link to="/" className={location.pathname === "/" ? "active" : ""}>
+            Home
+          </Link>
+        </li>
+
+        <li>
           <FaPray />
           <Link
             to="/user-management"
@@ -30,6 +37,7 @@ const Sidebar: React.FC = () => {
         </li>
         <li>
           <FaCubes />
+
           <Link
             to="/product-management"
             className={
@@ -48,6 +56,15 @@ const Sidebar: React.FC = () => {
             }
           >
             Order Management
+          </Link>
+        </li>
+        <li>
+          <FaListAlt />
+          <Link
+            to="/category"
+            className={location.pathname === "/category" ? "active" : ""}
+          >
+            Category
           </Link>
         </li>
       </ul>

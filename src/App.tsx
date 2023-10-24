@@ -13,6 +13,7 @@ function App() {
   const isLoggedIn = useSelector(
     (state: { auth: { isLoggedIn: boolean } }) => state.auth.isLoggedIn
   );
+
   return (
     <>
       {isLoggedIn ? (

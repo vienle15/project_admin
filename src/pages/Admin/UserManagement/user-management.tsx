@@ -23,14 +23,9 @@ function UserManagement() {
   // Hàm xử lý khi có sự thay đổi trên trường tìm kiếm
   const handleSearch = () => {
     // Lọc danh sách người dùng dựa trên từ khóa tìm kiếm
-
-    console.log(222, originalUsers);
-
     const filteredUsers = originalUsers.filter((user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    console.log(filteredUsers, 1111);
-
     setUsers([...filteredUsers]);
   };
 
@@ -49,6 +44,15 @@ function UserManagement() {
 
     // Lưu trạng thái vai trò người dùng vào Local Storage
     localStorage.setItem("userRoles", JSON.stringify(updatedUsers));
+
+    // Cập nhật dữ liệu trên API
+    updateData("usersList", userID, { role: newRole })
+      .then((res) => {
+        // Xử lý thành công (nếu cần)
+      })
+      .catch((error) => {
+        // Xử lý lỗi (nếu cần)
+      });
   };
 
   const handleBlockUser = (userID: string) => {
@@ -56,11 +60,14 @@ function UserManagement() {
     if (userChange) {
       userChange.status = !userChange.status;
 
+      // Cập nhật dữ liệu trên API
       updateData("usersList", userChange.id, userChange)
         .then((res) => {
           getDataUser();
         })
-        .catch();
+        .catch((error) => {
+          // Xử lý lỗi (nếu cần)
+        });
     }
   };
 
@@ -118,9 +125,7 @@ function UserManagement() {
                   <select
                     name="role"
                     value={user.role}
-                    onChange={(e) =>
-                      handleRoleChange(user.role, e.target.value)
-                    }
+                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
                   >
                     <option value="Admin">Admin</option>
                     <option value="User">User</option>
@@ -134,7 +139,6 @@ function UserManagement() {
                   >
                     {user.status ? "Unblock" : "Block"}
                   </button>
-                  <button className="sec">Delete</button>
                 </td>
               </tr>
             ))}
