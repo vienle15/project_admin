@@ -3,20 +3,25 @@ import axios from "axios";
 import OrderList from "../../../entities/orderList.entity";
 
 function OrderManagement() {
-  const [orders, setOrders] = useState<OrderList[]>([]); // State để lưu trữ dữ liệu
+  const [order, setOrders] = useState<OrderList[]>([]); // State để lưu trữ dữ liệu
   const [searchTerm, setSearchTerm] = useState(""); // State để lưu trữ từ khóa tìm kiếm
   const [originalOrders, setOriginalOrders] = useState<OrderList[]>([]); // Sao lưu danh sách đơn hàng gốc
 
   useEffect(() => {
     // Sử dụng Axios để lấy dữ liệu từ API hoặc tệp JSON
-    axios.get("http://localhost:3000/orders").then((response) => {
-      setOrders(response.data);
-      setOriginalOrders(response.data); // Sao lưu danh sách đơn hàng gốc
-    });
+    axios
+      .get("http://localhost:6543/api/v1/order") // Sửa endpoint từ "order" thành "order"
+      .then((response) => {
+        setOrders(response.data);
+        setOriginalOrders(response.data); // Sao lưu danh sách đơn hàng gốc
+      })
+      .catch((error) => {
+        console.error("Error fetching order:", error);
+      });
   }, []); // Khi tham số thứ hai là mảng rỗng, `useEffect` sẽ chỉ chạy sau khi component được render lần đầu.
 
   // Hàm xử lý khi có sự thay đổi trên trường tìm kiếm
-  const handleSearch = (event: { target: { value: any } }) => {
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setSearchTerm(value);
   };
@@ -58,7 +63,7 @@ function OrderManagement() {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order) => (
+          {order.map((order) => (
             <tr key={order.orderID}>
               <td>{order.date}</td>
               <td>{order.customer}</td>

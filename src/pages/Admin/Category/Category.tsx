@@ -23,22 +23,22 @@ function Category() {
   const [action, setAction] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [originalCategory, setOriginalCategory] = useState<Categories[]>([]);
+
   const columns: GridColDef[] = [
     {
       field: "categoryname",
-      headerName: "category name",
+      headerName: "Category Name",
       width: 280,
       headerAlign: "center",
       align: "center",
     },
     {
-      field: "id",
-      headerName: "category id",
+      field: "categoryId",
+      headerName: "Category ID",
       width: 120,
       headerAlign: "center",
       align: "center",
     },
-
     {
       field: "action",
       headerName: "Hành động",
@@ -48,38 +48,25 @@ function Category() {
       renderCell: (params) => (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Button
-            onClick={() => handleViewDetails(params.row.id)}
+            onClick={() => handleViewDetails(params.row.categoryId)}
             variant="contained"
             className="pri"
-            // style={{
-            //   backgroundColor: "blue",
-            //   color: "white",
-            //   cursor: "pointer",
-            // }}
           >
             Xem
           </Button>
           <Button
-            onClick={() => handleOpenEdit(params.row.id)}
+            onClick={() => handleOpenEdit(params.row.categoryId)}
             variant="contained"
             color="primary"
             className="Sec"
-            // style={{
-            //   marginLeft: 5,
-            //   cursor: "pointer",
-            // }}
           >
             Sửa
           </Button>
           <Button
-            onClick={() => handleDeleteCourse(params.row.id)}
+            onClick={() => handleDeleteCategory(params.row.categoryId)}
             variant="contained"
             color="secondary"
             className="trd"
-            // style={{
-            //   marginLeft: 5,
-            //   cursor: "pointer",
-            // }}
           >
             Xóa
           </Button>
@@ -87,10 +74,12 @@ function Category() {
       ),
     },
   ];
+
   useEffect(() => {
     fetchCategory();
     fetchProduct();
   }, []);
+
   async function fetchCategory() {
     const getCategory = await getData("category");
     setCategory(getCategory);
@@ -101,59 +90,63 @@ function Category() {
     const getProduct = await getData("products");
     setProduct(getProduct);
   }
-  // Hàm xử lý khi có sự thay đổi trên trường tìm kiếm
+
   const handleSearch = (event: { target: { value: any } }) => {
     const { value } = event.target;
     setSearchTerm(value);
   };
-  // Hàm xử lý khi nhấn nút "Clear"
+
   const handleClear = () => {
-    setSearchTerm(""); // Xóa giá trị tìm kiếm
-    setCategory(originalCategory); // Đặt lại danh sách đơn hàng bằng danh sách gốc
+    setSearchTerm("");
+    setCategory(originalCategory);
   };
 
   const handleOpenEdit = async (id: string) => {
-    const course = category.find((course) => course.id === id);
+    const selectedCategory = category.find(
+      (category) => category.categoryId === id
+    );
     setAction("edit");
-    setSelectedCategory(course || null);
+    setSelectedCategory(selectedCategory || null);
     setModalOpen(true);
   };
 
-  const handleAddModal = async () => {
+  const handleAddModal = () => {
     setModalOpen(true);
     setAction("add");
   };
 
-  const hanldeClose = () => {
+  const handleClose = () => {
     setModalOpen(false);
     setSelectedCategory(null);
     setAction("");
   };
 
-  const handleDeleteCourse = async (id: string) => {
+  const handleDeleteCategory = async (id: string) => {
     await deleteData("category", id);
     fetchCategory();
   };
 
   const handleViewDetails = (id: string) => {
-    const course = category.find((course) => course.id === id);
-    if (course) {
+    const selectedCategory = category.find(
+      (category) => category.categoryId === id
+    );
+    if (selectedCategory) {
       setAction("view");
-      setSelectedCategory(course);
+      setSelectedCategory(selectedCategory);
       setModalOpen(true);
     }
   };
+
   useEffect(() => {
-    // Lọc danh sách người dùng dựa trên từ khóa tìm kiếm
-    const filterCategory = originalCategory.filter((coures) => {
-      if (coures && coures.categoryname) {
-        return coures.categoryname
+    const filterCategory = originalCategory.filter((category) => {
+      if (category && category.categoryname) {
+        return category.categoryname
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
       }
-      return false; // Nếu user hoặc user.username không xác định, bỏ qua
+      return false;
     });
-    setCategory(filterCategory); // Cập nhật danh sách người dùng
+    setCategory(filterCategory);
   }, [searchTerm, originalCategory]);
 
   return (
@@ -209,12 +202,7 @@ function Category() {
             className="disabled-focus"
             rows={category}
             columns={columns}
-            getRowId={(row) => row.id}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
+            getRowId={(row) => row.categoryId}
             pageSizeOptions={[5, 10]}
           />
         </div>
@@ -222,7 +210,7 @@ function Category() {
       <CategoryModal
         category={selectedCategory}
         open={isModalOpen}
-        onClose={hanldeClose}
+        onClose={handleClose}
         product={product}
         action={action}
         fetchCategory={fetchCategory}
@@ -231,15 +219,13 @@ function Category() {
   );
 }
 
-export default Category;
-
 interface CategoryModalProps {
   category: Categories | null;
   open: boolean;
   onClose: () => void;
   product: Product[] | null;
   action: string;
-  fetchCategory: Function;
+  fetchCategory: () => void; // Thay đổi kiểu của fetchCategory
 }
 
 const CategoryModal: React.FC<CategoryModalProps> = ({
@@ -251,36 +237,31 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
   fetchCategory,
 }) => {
   const [formData, setFormData] = useState<Categories>({
-    id: "",
-
+    categoryId: "",
     categoryname: "",
-
     list: [],
   });
-  const handleAddCourse = async () => {
-    const newCategory = {
-      id: formData.id,
-      categoryname: formData.categoryname,
 
+  const handleAddCategory = async () => {
+    const newCategory = {
+      categoryId: formData.categoryId,
+      categoryname: formData.categoryname,
       list: formData.list,
     };
     await createData("category", newCategory);
-    fetchCategory();
+    fetchCategory(); // Gọi fetchCategory để cập nhật danh sách sau khi thêm
     onClose();
   };
 
-  const handleUpdateCourse = async () => {
-    // Tạo đối tượng mới chứa thông tin cần sửa
+  const handleUpdateCategory = async () => {
     const updatedCategory = {
-      id: formData.id,
+      categoryId: formData.categoryId,
       categoryname: formData.categoryname,
-
       list: formData.list,
     };
 
-    await updateData("category", formData.id, updatedCategory);
-    fetchCategory();
-
+    await updateData("category", formData.categoryId, updatedCategory);
+    fetchCategory(); // Gọi fetchCategory để cập nhật danh sách sau khi sửa
     onClose();
   };
 
@@ -301,10 +282,8 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
       setFormData(category);
     } else {
       setFormData({
-        id: "",
-
+        categoryId: "",
         categoryname: "",
-
         list: [],
       });
     }
@@ -333,13 +312,13 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
         >
           <form>
             <div style={{ marginBottom: 10 }}>
-              <label htmlFor="id">ID</label>
+              <label htmlFor="categoryId">ID</label>
               <input
                 type="text"
-                id="id"
-                name="id"
+                id="categoryId"
+                name="categoryId"
                 onChange={handleInputChange}
-                value={formData.id}
+                value={formData.categoryId}
                 style={{ width: "100%", fontSize: 16, padding: 9 }}
               />
             </div>
@@ -356,17 +335,20 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
             </div>
 
             <div style={{ marginBottom: 10 }}>
-              <label htmlFor="list">product list</label>
+              <label htmlFor="list">Product List</label>
               <input
                 type="text"
                 id="list"
                 value={
-                  formData.list
-                    .map(
-                      (item) =>
-                        product?.find((list) => list.id == item)?.productName
-                    )
-                    .join(", ") || ""
+                  formData.list && formData.list.length > 0
+                    ? formData.list
+                        .map(
+                          (item) =>
+                            product?.find((list) => list.productId === item)
+                              ?.productName
+                        )
+                        .join(", ")
+                    : ""
                 }
                 style={{ width: "100%", fontSize: 16, padding: 9 }}
                 readOnly
@@ -389,7 +371,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
               variant="contained"
               color="primary"
               style={{ marginTop: 20 }}
-              onClick={handleAddCourse}
+              onClick={handleAddCategory}
             >
               Thêm
             </Button>
@@ -398,7 +380,7 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
               variant="contained"
               color="primary"
               style={{ marginTop: 20 }}
-              onClick={handleUpdateCourse}
+              onClick={handleUpdateCategory}
             >
               Sửa
             </Button>
@@ -408,3 +390,5 @@ const CategoryModal: React.FC<CategoryModalProps> = ({
     </Modal>
   );
 };
+
+export default Category;

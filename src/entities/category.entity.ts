@@ -1,6 +1,6 @@
 interface Categories {
   categoryname: string;
-  id: string;
+  categoryId: string;
   list: string[];
 }
 export default Categories;

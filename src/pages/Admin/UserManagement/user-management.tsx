@@ -9,7 +9,7 @@ function UserManagement() {
   const [originalUsers, setOriginalUsers] = useState<UserList[]>([]); // Sao lưu danh sách người dùng gốc
 
   function getDataUser() {
-    getData("usersList").then((response) => {
+    getData("users").then((response) => {
       setUsers(response);
       setOriginalUsers(response); // Sao lưu danh sách người dùng gốc
     });

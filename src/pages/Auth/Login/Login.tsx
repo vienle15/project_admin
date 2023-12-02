@@ -20,6 +20,9 @@ import {
 } from "../../../redux/Slice/AuthSlice";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import AuthService from "../Auth.service";
+import { signInWithPopup } from "firebase/auth";
+import { loginService } from "../../../services/auth.service";
 
 const defaultTheme = createTheme();
 
@@ -34,31 +37,18 @@ export default function SignIn() {
     event.preventDefault();
     const email = event.currentTarget.email.value;
     const password = event.currentTarget.password.value;
-    try {
-      const response = await axios.get("http://localhost:3000/users", {
-        params: {
-          email,
-          password,
-        },
-      });
-
-      if (response.data) {
+    loginService({ email, password })
+      .then((result) => {
         dispatch(loginSuccess({ email, password }));
-
-        // Lưu thông tin đăng nhập vào Local Storage
-        localStorage.setItem("loggedInUser", JSON.stringify({ email }));
-
         navigate("/");
-      } else {
-        dispatch(loginFailure());
-        alert("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
-      }
-    } catch (error) {
-      console.error("Lỗi đăng nhập:", error);
-      dispatch(loginFailure());
-      alert("Server Error!!!!");
-    }
+      })
+      .catch((err) => {
+        console.log("1111Error:", err.message);
+        alert(err.message);
+        dispatch(loginFailure(err.message));
+      });
   };
+  const authService = new AuthService();
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -115,6 +105,14 @@ export default function SignIn() {
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In
+            </Button>
+            <Button
+              onClick={authService.loginGoogle}
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign In with Google
             </Button>
             <Grid container>
               <Grid item xs>

@@ -1,10 +1,10 @@
 interface Product {
-  image: string;
+  productImg: string;
   productName: string;
   productPrice: string;
   productQuantity: number;
   productSize: string;
   productCode: string;
-  id: string;
+  productId: string;
 }
 export default Product;

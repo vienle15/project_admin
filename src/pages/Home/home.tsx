@@ -8,10 +8,10 @@ function Home() {
 
   useEffect(() => {
     // Địa chỉ URL của JSON server cho từng tài nguyên
-    const userApiUrl = "http://localhost:3000/usersList";
-    const productApiUrl = "http://localhost:3000/products";
+    const userApiUrl = "http://localhost:6543/api/v1/users";
+    const productApiUrl = "http://localhost:6543/api/v1/products";
 
-    const orderApiUrl = " http://localhost:3000/orders";
+    const orderApiUrl = " http://localhost:6543/api/v1/order";
 
     // Hàm lấy dữ liệu từ API bằng Axios
     const fetchData = async (

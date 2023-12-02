@@ -8,18 +8,18 @@ function ProductManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [originalProducts, setOriginalProducts] = useState<Product[]>([]);
   const [newProduct, setNewProduct] = useState<Product>({
-    id: "",
+    productId: "",
     productCode: "",
     productName: "",
     productPrice: "",
     productQuantity: 0,
     productSize: "",
-    image: "",
+    productImg: "",
   });
   const [showModal, setShowModal] = useState(false);
   useEffect(() => {
     // Fetch products data when the component mounts
-    axios.get("http://localhost:3000/products").then((response) => {
+    axios.get("http://localhost:6543/api/v1/products").then((response) => {
       setProducts(response.data);
       setOriginalProducts(response.data);
     });
@@ -35,15 +35,21 @@ function ProductManagement() {
       setProducts(filteredProducts);
     }
   }, [searchTerm, originalProducts]);
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+  const handleSearch = (event: { target: { value: any } }) => {
+    const { value } = event.target;
+    // Kiểm tra giá trị có tồn tại hay không trước khi gọi toLowerCase()
+    const searchTerm = value ? value.toLowerCase() : "";
+    setSearchTerm(searchTerm);
   };
+
   const handleClear = () => {
     setSearchTerm("");
   };
   const handleDeleteProduct = async (id: string) => {
     await deleteData("products", id);
-    const updatedProducts = products.filter((product) => product.id !== id);
+    const updatedProducts = products.filter(
+      (product) => product.productId !== id
+    );
     setProducts(updatedProducts);
   };
   const openModal = () => {
@@ -62,13 +68,13 @@ function ProductManagement() {
       setProducts((prevProducts) => [...prevProducts, response]);
       closeModal();
       setNewProduct({
-        id: "",
+        productId: "",
         productCode: "",
         productName: "",
         productPrice: "",
         productQuantity: 0,
         productSize: "",
-        image: "",
+        productImg: "",
       });
     }
   };
@@ -78,7 +84,7 @@ function ProductManagement() {
       reader.onload = (e) => {
         setNewProduct({
           ...newProduct,
-          image: e.target?.result as string,
+          productImg: e.target?.result as string,
         });
       };
       reader.readAsDataURL(event.target.files[0]);
@@ -86,16 +92,18 @@ function ProductManagement() {
   };
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editProduct, setEditProduct] = useState<Product>({
-    id: "",
+    productId: "",
     productCode: "",
     productName: "",
     productPrice: "",
     productQuantity: 0,
     productSize: "",
-    image: "",
+    productImg: "",
   });
 
   const openEditModal = (product: Product) => {
+    console.log(111, product);
+
     setEditProduct(product);
     setEditModalVisible(true);
   };
@@ -115,7 +123,7 @@ function ProductManagement() {
       reader.onload = (e) => {
         setEditProduct({
           ...editProduct,
-          image: e.target?.result as string,
+          productImg: e.target?.result as string,
         });
       };
       reader.readAsDataURL(event.target.files[0]);
@@ -124,18 +132,19 @@ function ProductManagement() {
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(123123, editProduct);
 
     try {
       // Gửi yêu cầu PUT để chỉnh sửa sản phẩm
       const response = await axios.put(
-        `http://localhost:3000/products/${editProduct.id}`,
+        `http://localhost:6543/api/v1/products/${editProduct.productId}`,
         editProduct
       );
 
       if (response.status === 200) {
         // Cập nhật state sản phẩm đã chỉnh sửa
         const updatedProducts = products.map((product) =>
-          product.id === editProduct.id ? editProduct : product
+          product.productId === editProduct.productId ? editProduct : product
         );
         setProducts(updatedProducts);
 
@@ -148,6 +157,8 @@ function ProductManagement() {
       console.error("Lỗi khi chỉnh sửa sản phẩm:", error);
     }
   };
+  console.log(11111111, products);
+
   return (
     <div>
       <input
@@ -179,11 +190,16 @@ function ProductManagement() {
         </thead>
         <tbody>
           {products.map((product) => (
-            <tr key={product.id}>
+            <tr key={product.productId}>
               <td>
-                <img src={product.image} alt="Avatar" width="50" height="50" />
+                <img
+                  src={product.productImg}
+                  alt="Avatar"
+                  width="50"
+                  height="50"
+                />
               </td>
-              <td>{product.id}</td>
+              <td>{product.productId}</td>
               <td>{product.productCode}</td>
               <td>{product.productName}</td>
               <td>{product.productPrice}$</td>
@@ -195,7 +211,7 @@ function ProductManagement() {
                 </button>
                 <button
                   className="sec"
-                  onClick={() => handleDeleteProduct(product.id)}
+                  onClick={() => handleDeleteProduct(product.productId)}
                 >
                   Delete
                 </button>
@@ -224,19 +240,19 @@ function ProductManagement() {
               <label className="input-label">Image:</label>
               <input
                 type="file"
-                accept="image/*"
+                accept="productImg/*"
                 onChange={handleImageChange}
                 className="input-field"
               />
               <img
-                src={newProduct.image}
+                src={newProduct.productImg}
                 alt="Preview"
-                className="preview-image"
+                className="preview-productImg"
               />
               <label className="input-label">Id:</label>
               <input
                 type="text"
-                value={newProduct.id}
+                value={newProduct.productId}
                 onChange={(e) => handleInputChange("id", e.target.value)}
                 className="input-field"
               />
@@ -301,19 +317,19 @@ function ProductManagement() {
               <label className="input-label">Image:</label>
               <input
                 type="file"
-                accept="image/*"
+                accept="productImg/*"
                 onChange={handleEditImageChange}
                 className="input-field"
               />
               <img
-                src={editProduct.image}
+                src={editProduct.productImg}
                 alt="Preview"
-                className="preview-image"
+                className="preview-productImg"
               />
               <label className="input-label">Id:</label>
               <input
                 type="text"
-                value={editProduct.id}
+                value={editProduct.productId}
                 onChange={(e) => handleEditInputChange("id", e.target.value)}
                 disabled
                 className="input-field"
